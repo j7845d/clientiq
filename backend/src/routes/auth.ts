@@ -3,15 +3,30 @@ import { Router } from 'express';
 import { connectToDB } from '../db';
 import type { User } from '../../../types'; // Adjust path as needed
 
+interface RegisterRequestBody {
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface LoginRequestBody {
+  email: string;
+  password: string;
+}
+
+interface UserWithPassword extends User {
+  password?: string;
+}
+
 const router = Router();
 
 const getUsersCollection = async () => {
   const db = await connectToDB();
-  return db.collection('users');
+  return db.collection<UserWithPassword>('users');
 };
 
 router.post('/register', async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password }: RegisterRequestBody = req.body;
 
   if (!name || !email || !password) {
     return res.status(400).json({ message: 'Name, email, and password are required' });
@@ -49,7 +64,7 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password }: LoginRequestBody = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });

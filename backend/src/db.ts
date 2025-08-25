@@ -1,12 +1,12 @@
 
-import { MongoClient } from 'mongodb';
+import { MongoClient, Db } from 'mongodb';
 
 const url = process.env.DATABASE_URL || 'mongodb://localhost:27017';
 const client = new MongoClient(url);
 
-let db;
+let db: Db | null = null;
 
-export const connectToDB = async () => {
+export const connectToDB = async (): Promise<Db> => {
   if (db) {
     return db;
   }

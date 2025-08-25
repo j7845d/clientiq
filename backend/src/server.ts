@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import { connectToDB } from './db';
 import authRoutes from './routes/auth';
 import clientRoutes from './routes/clients';
+import analysisRoutes from './routes/analysis';
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -16,6 +17,7 @@ app.use(bodyParser.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', authRoutes); // Assuming /api/users is handled by auth routes
 app.use('/api/clients', clientRoutes);
+app.use('/api/analysis', analysisRoutes);
 
 // Serve static files from the React app
 import path from 'path';

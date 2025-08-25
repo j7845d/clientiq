@@ -52,7 +52,7 @@ router.get('/all', async (req, res) => {
   try {
     const collection = await getClientsCollection();
     const allClients = await collection.find({}).toArray();
-    const clientsByUser = allClients.reduce((acc, client) => {
+    const clientsByUser = allClients.reduce((acc: Record<string, Client[]>, client: Client) => {
       if (!acc[client.userId]) {
         acc[client.userId] = [];
       }

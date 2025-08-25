@@ -1,6 +1,5 @@
 
-import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { analyzeCompetitor, getSuggestions } from '../services/geminiService';
+import { analyzeCompetitor, getSuggestions, analyzeCompetitorUrl } from '../services/geminiService';
 import type { CompetitorReport } from '../types';
 import { Card } from './ui/Card';
 import { Button } from './ui/Button';
@@ -46,6 +45,7 @@ const ReportSkeleton = () => (
 const CompetitorAnalysis: React.FC = () => {
   const [businessName, setBusinessName] = useState<string>('');
   const [location, setLocation] = useState<string>('');
+  const [url, setUrl] = useState<string>('');
   const [report, setReport] = useState<CompetitorReport | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -78,6 +78,25 @@ const CompetitorAnalysis: React.FC = () => {
       setIsLoading(false);
     }
   }, [businessName, location]);
+
+  const handleAnalyzeUrl = useCallback(async () => {
+    if (!url.trim()) {
+      setError('Please enter a URL.');
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    setReport(null);
+
+    try {
+      const result = await analyzeCompetitorUrl(url);
+      setReport(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unknown error occurred.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [url]);
 
   const fetchSuggestions = useCallback(async (query: string, type: 'business' | 'location') => {
     if (query.trim().length < 2) {
@@ -159,7 +178,7 @@ const CompetitorAnalysis: React.FC = () => {
       <Card>
         <div className="p-6">
           <h2 className="text-xl font-semibold text-slate-800 dark:text-white mb-2">
-            Competitor Analysis (Lite)
+            Competitor Analysis (Business Name & Location)
           </h2>
           <p className="text-slate-600 dark:text-slate-400 mb-4">
             Enter your client’s business name and location to get a deep-dive into their online presence.
@@ -221,6 +240,34 @@ const CompetitorAnalysis: React.FC = () => {
         </div>
       </Card>
 
+      <Card>
+        <div className="p-6">
+          <h2 className="text-xl font-semibold text-slate-800 dark:text-white mb-2">
+            Competitor Analysis (Website URL)
+          </h2>
+          <p className="text-slate-600 dark:text-slate-400 mb-4">
+            Enter a competitor's website URL to get a deep-dive into their online presence.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-2 items-start">
+            <div className="relative w-full sm:flex-grow">
+              <Input
+                type="url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="e.g., 'https://www.competitor.com'"
+                disabled={isLoading}
+                className="w-full"
+                aria-label="Competitor Website URL"
+              />
+            </div>
+            <Button onClick={handleAnalyzeUrl} disabled={isLoading || !url.trim()} className="w-full sm:w-auto">
+              {isLoading ? <Spinner className="w-5 h-5 mr-2" /> : null}
+              {isLoading ? 'Analyzing...' : 'Analyze URL'}
+            </Button>
+          </div>
+        </div>
+      </Card>
+
       {error && (
         <div className="bg-red-500/10 border border-red-500/20 text-red-700 dark:text-red-400 px-4 py-3 rounded-lg flex items-center gap-3">
           <ExclamationTriangleIcon className="w-5 h-5" />
@@ -236,7 +283,7 @@ const CompetitorAnalysis: React.FC = () => {
             <Card>
               <div className="p-6">
                 <h3 className="text-lg font-semibold text-slate-800 dark:text-white mb-4">
-                  Analysis for: <span className="text-sky-500">{businessName}</span>
+                  Analysis for: <span className="text-sky-500">{businessName || url}</span>
                 </h3>
                 <div className="prose prose-slate dark:prose-invert max-w-none">
                     <MarkdownRenderer content={report.text} />

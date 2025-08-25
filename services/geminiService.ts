@@ -1,5 +1,3 @@
-
-
 import { GoogleGenAI, GenerateContentResponse, Type } from "@google/genai";
 import type { CompetitorReport, PitchContent, Client, EmailValidationResult, RowValidationResult } from '../types';
 
@@ -287,7 +285,7 @@ export const validateClientDataBatch = async (clients: Record<string, string>[])
       - The 'Website' field, if present and not empty, must be a valid URL format (should start with http, https, or www).
 
       **Data Batch:**
-      ${JSON.stringify(clients.map((client, index) => ({ index, ...client })))}
+      ${JSON.stringify(clients.map((client, index) => ({ index, ...client })))} 
 
       Return a JSON array where each object corresponds to an input client and contains:
       - "originalIndex": The original index of the client in the batch I provided.
@@ -327,4 +325,25 @@ export const validateClientDataBatch = async (clients: Record<string, string>[])
         console.error("Error validating client data batch:", error);
         throw new Error("Failed to validate data with AI. The model may have returned an unexpected format or the request failed.");
     }
+};
+export const analyzeCompetitorUrl = async (url: string): Promise<CompetitorReport> => {
+  try {
+    const response = await fetch('/api/analysis/analyze-url', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to analyze URL.');
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error analyzing competitor URL:", error);
+    throw new Error(error instanceof Error ? error.message : 'An unknown error occurred during URL analysis.');
+  }
 };
