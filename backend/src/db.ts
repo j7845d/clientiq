@@ -1,0 +1,22 @@
+
+import { MongoClient } from 'mongodb';
+
+const url = 'mongodb://localhost:27017';
+const client = new MongoClient(url);
+
+let db;
+
+export const connectToDB = async () => {
+  if (db) {
+    return db;
+  }
+  try {
+    await client.connect();
+    console.log('Connected to MongoDB');
+    db = client.db('sales-power-up-suite');
+    return db;
+  } catch (err) {
+    console.error('Failed to connect to MongoDB', err);
+    process.exit(1);
+  }
+};
