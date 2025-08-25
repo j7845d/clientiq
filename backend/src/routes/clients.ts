@@ -51,7 +51,7 @@ router.post('/', async (req, res) => {
 router.get('/all', async (req, res) => {
   try {
     const collection = await getClientsCollection();
-    const allClients = await collection.find({}).toArray();
+    const allClients = await collection.find({}).toArray() as Client[];
     const clientsByUser = allClients.reduce((acc: Record<string, Client[]>, client: Client) => {
       if (!acc[client.userId]) {
         acc[client.userId] = [];
