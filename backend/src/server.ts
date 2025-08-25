@@ -2,10 +2,10 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import { connectToDB } from './db';
-import authRoutes from './routes/auth';
-import clientRoutes from './routes/clients';
-import analysisRoutes from './routes/analysis';
+import { connectToDB } from './db.js';
+import authRoutes from './routes/auth.js';
+import clientRoutes from './routes/clients.js';
+import analysisRoutes from './routes/analysis.js';
 
 const app = express();
 const port = process.env.PORT || 3001;

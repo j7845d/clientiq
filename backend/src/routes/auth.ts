@@ -1,7 +1,7 @@
 
 import { Router } from 'express';
-import { connectToDB } from '../db';
-import type { User } from '../../../types'; // Adjust path as needed
+import { connectToDB } from '../db.js';
+import type { User } from '../../../types.js'; // Adjust path as needed
 
 interface RegisterRequestBody {
   name: string;
@@ -64,7 +64,7 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  const { email, password }: LoginRequestBody = req.body;
+  const { email, password }: { email: string; password: string } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ message: 'Email and password are required' });
