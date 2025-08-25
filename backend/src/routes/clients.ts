@@ -1,7 +1,7 @@
 
 import { Router } from 'express';
 import { connectToDB } from '../db.js';
-import type { Client } from '../../../types.js'; // Adjust path as needed
+import type { Client } from '../types.js'; // Adjust path as needed
 
 const router = Router();
 

@@ -1,7 +1,7 @@
 
 import { Router } from 'express';
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
-import type { CompetitorReport } from '../../../types.js';
+import type { CompetitorReport } from '../types.js';
 
 const router = Router();
 

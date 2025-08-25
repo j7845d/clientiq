@@ -1,7 +1,7 @@
 
 import { Router } from 'express';
 import { connectToDB } from '../db.js';
-import type { User } from '../../../types.js'; // Adjust path as needed
+import type { User } from '../types.js'; // Adjust path as needed
 
 interface RegisterRequestBody {
   name: string;
